@@ -529,9 +529,9 @@
     
     <!-- Shooting Stars -->
     <div class="shooting-star" style="top: 20%; right: 80%; animation-delay: 0s;"></div>
-    <div class="shooting-star" style="top: 40%; right: 60%; animation-delay: 2s;"></div>
-    <div class="shooting-star" style="top: 60%; right: 90%; animation-delay: 4s;"></div>
-    <div class="shooting-star" style="top: 30%; right: 40%; animation-delay: 6s;"></div>
+    <div class="shooting-star" style="top: 40%; right: 60%; animation-delay: 0s;"></div>
+    <div class="shooting-star" style="top: 60%; right: 90%; animation-delay: 0s;"></div>
+    <div class="shooting-star" style="top: 30%; right: 40%; animation-delay: 0s;"></div>
     
     <!-- Lightning Effect -->
     <div class="lightning"></div>
@@ -660,7 +660,7 @@
 
     <!-- Projects Section -->
     <section id="projects" class="section">
-        <div class="container">
+        <div class="container" >
             <h2>Projects & Achievements</h2>
             <div class="cards-grid">
                 <div class="card">
@@ -731,16 +731,16 @@
                 </div>
                 <form id="contactForm">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
                     </div>
                     <div class="form-group">
-                        <input type="text" name="subject" placeholder="Subject" required>
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="message" rows="6" placeholder="Your Message" required></textarea>
+                        <textarea id="message" name="message" rows="6" placeholder="Your Message" required></textarea>
                     </div>
                     <div style="text-align: center;">
                         <button type="submit" class="btn">Send Message</button>
@@ -827,51 +827,45 @@
         createStars();
         createShootingStars();
 
-        // Form submission with EmailJS
+        // Form submission handler
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const formData = new FormData(this);
-            const formObject = {};
-            formData.forEach((value, key) => {
-                formObject[key] = value;
-            });
-
-            // EmailJS service (you'll need to set this up)
-            // For now, we'll simulate sending and show success message
             
             // Show success message
             const successMessage = document.getElementById('successMessage');
             successMessage.style.display = 'block';
             
-            // Reset form
-            this.reset();
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            // Send form data to FormSubmit.co
+            fetch('https://formsubmit.co/ajax/arunkumarpearls@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Reset form
+                document.getElementById('contactForm').reset();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
             
             // Hide success message after 5 seconds
             setTimeout(() => {
                 successMessage.style.display = 'none';
             }, 5000);
-
-            // You can also send the data to your email using EmailJS or a backend service
-            console.log('Form submitted:', formObject);
-            
-            // Example with fetch to send to your backend (replace with your endpoint)
-            /*
-            fetch('YOUR_BACKEND_ENDPOINT', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formObject)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-            */
         });
 
         // Add scroll effect to navigation
